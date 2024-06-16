@@ -5,7 +5,7 @@ export const connect = async () => {
   try {
     const user = config.mongo.username;
     const pass = config.mongo.password
-    const uri = `mongodb+srv://rafikandathuvayal:${pass}@cluster0.trekfmx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+    const uri = `mongodb+srv://rafikandathuvayal:atlasPassword@cluster0.trekfmx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
     await mongoose.connect(uri);
 
