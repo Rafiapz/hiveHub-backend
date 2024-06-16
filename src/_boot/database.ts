@@ -13,6 +13,6 @@ export const connect = async () => {
 
   } catch (error: any) {
     console.error(`❌ Database Connection failed`);
-    console.error(error.message);
+    console.error(error);
   }
 };
