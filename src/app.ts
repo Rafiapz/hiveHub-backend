@@ -39,8 +39,13 @@ const secret: string = process.env.SESSION_SECRET || 'Q3UBzdH9GEfiRCTKbi5MTPyChp
 
 app.use(session({ secret: secret, resave: true, saveUninitialized: true }));
 
+const allowedOrigins = [
+    'https://hivehub.onrender.com',
+    'https://www.hivehub.onrender.com'
+];
+
 const corsOptions = {
-    origin: process?.env?.FRONT_END_URL,
+    origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }
