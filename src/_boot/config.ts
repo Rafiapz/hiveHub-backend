@@ -12,5 +12,4 @@ export const config = {
         password: envString('MONGO_PASSWORD', 'hiveHubPassword')
     },
 
-
 };
