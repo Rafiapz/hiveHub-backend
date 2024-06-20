@@ -55,10 +55,14 @@ export const initializeSocketIO = (server: Server) => {
 
     try {
 
+        const allowedOrigins = [
+            'https://hivehub.shop',
+            'https://www.hivehub.shop'
+        ];
 
         const io = new SocketIOServer(server, {
             cors: {
-                origin: process.env.FRONT_END_URL,
+                origin: allowedOrigins,
                 methods: ['GET', 'POST'],
                 credentials: true
             },
