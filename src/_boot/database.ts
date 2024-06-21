@@ -8,15 +8,17 @@ export const connect = async () => {
     //  const uri = `mongodb+srv://rafikandathuvayal:${pass}@cluster0.trekfmx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
     // await mongoose.connect(uri);
 
-    const user = 'hiveHubUser'
-    const pass = 'hiveHubPassword'
-    await mongoose.connect(`${config.mongo.host}/${config.mongo.database}`, {
-      auth: {
-        username: user,
-        password: pass,
-      },
-      authSource: "admin",
-    });
+    // const user = 'hiveHubUser'
+    // const pass = 'hiveHubPassword'
+    // await mongoose.connect(`${config.mongo.host}/${config.mongo.database}`, {
+    //   auth: {
+    //     username: user,
+    //     password: pass,
+    //   },
+    //   authSource: "admin",
+    // });
+
+    await mongoose.connect("mongodb://127.0.0.1:27017/hiveHub")
 
     console.log(`🍃 Database Established connection with MongoDB`);
 
