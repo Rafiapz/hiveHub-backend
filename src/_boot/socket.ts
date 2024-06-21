@@ -55,14 +55,10 @@ export const initializeSocketIO = (server: Server) => {
 
     try {
 
-        const allowedOrigins = [
-            'https://hivehub.shop',
-            'https://www.hivehub.shop'
-        ];
 
         const io = new SocketIOServer(server, {
             cors: {
-                origin: allowedOrigins,
+                origin: process?.env?.FRONT_END_URL,
                 methods: ['GET', 'POST'],
                 credentials: true
             },
@@ -226,12 +222,10 @@ export const initializeSocketIO = (server: Server) => {
             socket.on('end-call', (peerId) => {
 
                 const userId = getKeyByValue(peers, peerId)
-                console.log('ended....');
-
 
                 if (userId) {
                     const user = getUser(userId)
-                    console.log('ended call');
+                    console.log('ended call', user);
 
                     io.to(user).emit('call-ended', userId)
                 }
