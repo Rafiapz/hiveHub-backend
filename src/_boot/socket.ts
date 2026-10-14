@@ -112,11 +112,8 @@ export const initializeSocketIO = (server: Server) => {
                             form.append('conversationId', conversationId)
                             form.append('from', 'socket')
 
-                            await axios.post(`${process?.env.BACK_END_URL}/api/chats/send-video/video`, form, {
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                            })
+                            // Fixed: removed incorrect Content-Type header — axios will auto-set multipart/form-data for FormData
+                            await axios.post(`${process?.env.BACK_END_URL}/api/chats/send-video/video`, form)
                             io.emit('upload-comepleted', { conversationId })
                         } catch (error) {
                             const sender = getUser(senderId)
@@ -158,10 +155,8 @@ export const initializeSocketIO = (server: Server) => {
                 console.log('image called');
                 const user = getUser(data?.receiverId);
                 if (user) {
-                    io.emit('image', { data: data?.data, senderId: data?.senderId });
-                } else {
-                    // console.log('user not found');
-
+                    // Fixed: use io.to(user) to send only to the receiver, not broadcast to all
+                    io.to(user).emit('image', { data: data?.data, senderId: data?.senderId });
                 }
 
             });
@@ -195,9 +190,19 @@ export const initializeSocketIO = (server: Server) => {
 
             socket.on("disconnect", () => {
 
-                console.log('disconnected');
+                console.log('disconnected', socket.id);
 
-                removeUser(socket.id);
+                // Find userId by socketId (socket.id is the MAP VALUE, not the key)
+                let disconnectedUserId: any = null;
+                for (let [userId, socketId] of users.entries()) {
+                    if (socketId === socket.id) {
+                        disconnectedUserId = userId;
+                        break;
+                    }
+                }
+                if (disconnectedUserId) {
+                    removeUser(disconnectedUserId);
+                }
                 io.emit("getUsers", users);
             });
 
