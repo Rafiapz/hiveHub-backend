@@ -18,7 +18,6 @@ export const generateOtp = (email: string) => {
 
     transporter.verify((error, success) => {
       if (error) {
-        console.log(error);
       } else {
 
       }
@@ -46,7 +45,6 @@ export const generateOtp = (email: string) => {
 
     return { otp, createdAt }
   } catch (error) {
-    console.log(error);
   }
 };
 

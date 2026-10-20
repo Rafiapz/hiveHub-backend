@@ -21,7 +21,6 @@ export const isAuthorized = (req: Request, res: Response) => {
 
 
     } catch (error: any) {
-        console.log(error.message);
         res.json({ status: 'failed', message: error.message }).status(500)
     }
 

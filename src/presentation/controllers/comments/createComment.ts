@@ -50,8 +50,6 @@ export const createCommentController = (dependencies: ICommentsDependencies, not
 
 
         } catch (error: any) {
-            console.log(error.message);
-
             res.json({ status: 'failed', message: error.message })
         }
 

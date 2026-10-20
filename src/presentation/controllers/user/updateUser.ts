@@ -27,8 +27,6 @@ export const updateOtpController = (dependencies: IDependencies) => {
 
             res.json({ status: 'ok', message: 'Successfully resent OTP' }).status(200)
         } catch (error: any) {
-            console.log(error);
-
             res.json({ status: 'failed', message: error.message })
         }
     }

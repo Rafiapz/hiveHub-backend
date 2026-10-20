@@ -10,8 +10,6 @@ export const findAllNetworks = async (userId: any) => {
         return allDocuments
 
     } catch (error: any) {
-        console.log(error);
-
         throw new Error(error)
     }
 }

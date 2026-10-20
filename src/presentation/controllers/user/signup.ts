@@ -24,8 +24,6 @@ export const signupController = (dependencies: IDependencies) => {
             data.profilePhoto = `${process?.env.BACK_END_URL}/api/image/user/no-profile.webp`
             data.coverPhoto = `${process?.env.BACK_END_URL}/api/image/user/no-coverphoto.jpg`
 
-            console.log(data);
-
             const user = await createUserUseCase(dependencies).execute(data)
 
             if (user) {
@@ -37,7 +35,6 @@ export const signupController = (dependencies: IDependencies) => {
 
         } catch (error: any) {
             res.status(400).json({ status: 'failed', message: error.message })
-            console.log(error);
         }
     }
 }

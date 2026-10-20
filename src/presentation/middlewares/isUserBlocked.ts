@@ -30,8 +30,6 @@ export const isUserBlocked = async (req: Request, res: Response, next: NextFunct
             const hisBlocked = hisDocument?.blockedUsers
 
             if (hisBlocked?.includes(userId)) {
-                console.log('returning');
-
                 res.status(200).json({ status: 'failed', data: 'blockedByHim', message: 'The user has blocked you' })
                 return
             } else {
@@ -39,8 +37,6 @@ export const isUserBlocked = async (req: Request, res: Response, next: NextFunct
             }
         }
     } catch (error) {
-        console.log(error);
-
         res.status(400).json({ status: 'failed' })
     }
 }

@@ -21,8 +21,6 @@ export const fetchMyLikesController = (dependencies: ILikesDependencies) => {
 
 
         } catch (error: any) {
-            console.log(error);
-
             res.json({ status: 'failed', message: error.message })
         }
     }

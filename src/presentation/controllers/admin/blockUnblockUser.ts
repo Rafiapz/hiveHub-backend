@@ -12,8 +12,6 @@ export const blockUnblockUser = (dependencies: IAdminDependencies) => {
             const userId = req?.body?.userId
             const toStatus: boolean = req?.body?.toStatus
 
-            console.log(toStatus);
-
 
             const user = await blockUnblockUserUseCase(dependencies).execute(userId, toStatus)
 

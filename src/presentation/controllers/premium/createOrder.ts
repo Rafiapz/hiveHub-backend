@@ -50,8 +50,6 @@ export const createOrderController = () => {
         } catch (error: any) {
 
             if (error?.code == '11000') {
-                console.log('caling in');
-
                 res.status(500).json({ status: 'failed', message: 'Something went wrong please try after 10 minutes' })
             } else {
                 res.status(400).json({ status: 'failed', message: error?.message })
@@ -133,8 +131,6 @@ const task = cron.schedule('* * * * *', async () => {
 
 
     } catch (error) {
-        console.log(error);
-
     }
 
 });

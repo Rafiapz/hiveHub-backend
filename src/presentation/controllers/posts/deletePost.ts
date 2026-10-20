@@ -13,7 +13,6 @@ export const deletePostController = (dependencies: IPostDependencies) => {
 
             if (typeof req?.query?.id === 'string') {
                 const id: string = req.query.id
-                console.log(id);
 
                 const status = await deletePostUseCase(dependencies).execute({ _id: id })
 

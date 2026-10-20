@@ -25,8 +25,6 @@ export const voteController = (dependencies: IPollsDependencies) => {
 
 
         } catch (error: any) {
-            console.log(error);
-
             res.status(error?.status || 500).json({ message: error?.message })
         }
     }

@@ -10,8 +10,6 @@ export const create = async (data: UserEntity): Promise<UserEntity | null> => {
         return newUser
 
     } catch (error) {
-        console.log(error);
-
         throw new Error('User creation failed')
     }
 }

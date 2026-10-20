@@ -47,7 +47,6 @@ export const editUserProfile = (dependencies: IDependencies) => {
             res.status(200).json({ status: 'ok', data: userData, message: 'Profile updated' })
 
         } catch (error: any) {
-            console.log(error);
             res.status(error.status || 400).json({ status: 'failed', message: error.message })
         }
     }
@@ -84,8 +83,6 @@ export const editUserEmailController = (dependencies: IDependencies) => {
 
             res.status(200).json({ status: "ok", message: "Successfully update email", data: userData });
         } catch (error: any) {
-            console.log(error);
-
             res.status(error.status || 500).json({ status: "failed", message: error.message });
         }
     };

@@ -33,10 +33,8 @@ export const uploadToS3Bucket = async (file: any) => {
         const command = new PutObjectCommand(params);
 
         await s3.send(command);
-        console.log("posted");
         return fileName
     } catch (error) {
-        console.log(error);
     }
 };
 

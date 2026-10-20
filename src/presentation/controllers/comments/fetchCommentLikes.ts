@@ -13,8 +13,6 @@ export const fetchCommentLikesController = (dependencies: ICommentsDependencies)
 
             const likes = await findAllCommentLikesUseCase(dependencies).execute(data)
 
-            // console.log(likes);
-
 
             res.status(200).json({ status: 'ok', data: likes })
 

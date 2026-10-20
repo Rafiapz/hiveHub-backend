@@ -24,8 +24,6 @@ export const deleteNotificationController = (dependencies: INotificationsDepende
 
 
         } catch (error: any) {
-            console.log(error);
-
             res.status(error?.status || 500).json({ status: 'failed', message: error?.message })
         }
     }
@@ -52,8 +50,6 @@ const task = cron.schedule('0 */10 * * *', async () => {
 
 
     } catch (error) {
-        console.log(error);
-
     }
 
 });

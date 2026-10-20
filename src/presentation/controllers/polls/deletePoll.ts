@@ -14,8 +14,6 @@ export const deletePollController = (dependencies: IPollsDependencies) => {
 
             const result = await deletePollUseCase(dependencies).execute(id)
 
-            console.log(result);
-
             res.status(200).json({ status: 'ok', message: 'Deleted Succesfully' })
 
 

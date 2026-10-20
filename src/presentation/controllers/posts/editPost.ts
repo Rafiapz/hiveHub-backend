@@ -57,7 +57,6 @@ export const editPostController = (dependencies: IPostDependencies) => {
 
 
         } catch (error: any) {
-            console.log(error);
             res.json({ status: 'failed', message: error.message }).status(400)
 
         }

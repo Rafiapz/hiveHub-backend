@@ -36,7 +36,6 @@ export const loginController = (dependencies: IDependencies) => {
 
 
     } catch (error: any) {
-      console.log(error)
       res.json({ status: 'failed', message: error.message })
     }
   }

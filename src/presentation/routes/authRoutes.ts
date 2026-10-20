@@ -71,8 +71,6 @@ export const authRoutes = (dependencies: IDependencies) => {
     router.route("/fetch-other-user").get(currentUser, fetchOtherUser);
 
     router.get("/failure", (req, res) => {
-        console.log("called failure");
-
         res.send("failure");
     });
 

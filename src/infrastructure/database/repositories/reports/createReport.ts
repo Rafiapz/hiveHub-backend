@@ -12,8 +12,6 @@ export const createReport = async (data: ReportsEntity) => {
         return report
 
     } catch (error: any) {
-        console.log(error);
-
         throw new Error(error.message)
     }
 }

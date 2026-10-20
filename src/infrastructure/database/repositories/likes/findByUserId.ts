@@ -18,8 +18,6 @@ export const findByUserId = async (userId: any) => {
         return { posts, likes }
 
     } catch (error: any) {
-        console.log(error);
-
         throw new Error(error)
     }
 }

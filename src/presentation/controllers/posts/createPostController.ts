@@ -64,7 +64,6 @@ export const createPostController = (dependencies: IPostDependencies) => {
 
 
         } catch (error: any) {
-            console.log(error);
             res.json({ status: 'failed', message: error.message }).status(500)
             //send proper error message
         }

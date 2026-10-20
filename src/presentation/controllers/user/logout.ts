@@ -1,4 +1,4 @@
-import { removeUser } from "../../../_boot/socket";
+import { getOnlineUsers, getSocketServer, removeUser } from "../../../_boot/socket";
 import { IDependencies } from "../../../application/interface/user/IDependencies";
 import { Request, Response } from "express";
 
@@ -11,6 +11,10 @@ export const logoutController = () => {
             const user = req?.user
             const userId = (user as any)?.id
             removeUser(userId)
+            const io = getSocketServer();
+            if (io) {
+                io.emit("getUsers", Array.from(getOnlineUsers().keys()));
+            }
             res.cookie('userToken', '', { maxAge: 1, httpOnly: true, sameSite: "none", secure: true })
             res.status(200).json({ status: 'ok', message: 'logout successfull', httpOnly: true, sameSite: "none", secure: true })
 

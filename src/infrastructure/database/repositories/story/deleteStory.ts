@@ -8,13 +8,8 @@ export const deleteStory = async (data: any) => {
 
         const length = result?.media?.length
 
-        console.log(length);
-
-
         if (length !== undefined && length <= 0) {
             const deleted = await Story.deleteOne({ _id: data?.storyId })
-            console.log(deleted);
-
         }
         return result
 

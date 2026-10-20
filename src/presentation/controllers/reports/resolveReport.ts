@@ -17,7 +17,6 @@ export const resolveReportController = (dependencies: IReportsDependencies) => {
             res.status(200).json({ status: 'ok', data: report })
 
         } catch (error: any) {
-            console.log(error);
             res.status(error?.status || 500).json({ status: 'failed', message: error?.message })
         }
     }

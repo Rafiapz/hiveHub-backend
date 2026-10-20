@@ -36,8 +36,6 @@ export const updateOne = async (query: { email: string }, data: any): Promise<Us
 
 
 //     } catch (error) {
-//         console.log(error);
-
 //     }
 
 // });

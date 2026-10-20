@@ -10,8 +10,6 @@ export const findStoryById = async (id: any) => {
         return stories
 
     } catch (error: any) {
-        console.log(error);
-
         throw new Error(error)
     }
 }

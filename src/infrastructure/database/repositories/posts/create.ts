@@ -10,8 +10,6 @@ export const create = async (data: PostEntity): Promise<PostEntity | null> => {
         return newPost
 
     } catch (error: any) {
-        console.log(error);
-
         throw new Error(error.message)
     }
 }

@@ -14,8 +14,6 @@ export const fetchAllReportsController = (dependencies: IReportsDependencies) =>
             res.status(200).json({ status: 'ok', data: reports })
 
         } catch (error: any) {
-            console.log(error);
-
             res.status(error?.status || 500).json({ status: 'failed', message: error?.message })
         }
     }

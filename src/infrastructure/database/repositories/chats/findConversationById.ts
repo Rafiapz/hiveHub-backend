@@ -9,8 +9,6 @@ export const findConversationById = async (userId: any) => {
         return allConversations
 
     } catch (error: any) {
-        console.log(error);
-
         throw new Error(error)
     }
 }
