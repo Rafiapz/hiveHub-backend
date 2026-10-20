@@ -1,8 +1,7 @@
 import { comparePassword } from "../../../_lib/bcrypt";
 import { genereateToken } from "../../../_lib/jwt";
 import { IDependencies } from "../../../application/interface/user/IDependencies";
-import { Request, Response, NextFunction } from 'express'
-
+import { Request, Response } from 'express'
 
 export const loginController = (dependencies: IDependencies) => {
 
@@ -11,13 +10,15 @@ export const loginController = (dependencies: IDependencies) => {
   return async (req: Request, res: Response) => {
     try {
 
-
       const user = await findOneUserUseCase(dependencies).execute({ email: req?.body?.email })
 
       if (!user) {
         throw new Error('Invalid email or password')
-
       } else {
+
+        if (!user.isVerified) {
+          throw new Error('Please verify your email before logging in')
+        }
 
         const status = await comparePassword(req?.body?.password, user?.password)
 
@@ -28,15 +29,12 @@ export const loginController = (dependencies: IDependencies) => {
           res.cookie('userToken', token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, sameSite: "none", secure: true })
           res.status(200).json({ status: 'ok', message: 'success', userData })
         } else {
-
           throw new Error('Invalid email or password')
-
         }
       }
 
-
     } catch (error: any) {
-      res.json({ status: 'failed', message: error.message })
+      res.status(400).json({ status: 'failed', message: error.message })
     }
   }
 

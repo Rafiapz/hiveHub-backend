@@ -4,7 +4,7 @@ import { generateOtp } from "../../../_lib/otp";
 import { IDependencies } from "../../../application/interface/user/IDependencies";
 import { Request, Response } from "express";
 import { verifyUserUseCase } from "../../../application/useCase/user";
-import { uploadToS3Bucket } from "../../../_lib/s3";
+import { uploadToCloudinary } from "../../../_lib/cloudinary";
 
 export const editUserProfile = (dependencies: IDependencies) => {
 
@@ -18,11 +18,21 @@ export const editUserProfile = (dependencies: IDependencies) => {
             let data: any = {}
             data = req?.body
 
-            if (req?.query.coverPhoto) {
-                data.coverPhoto = `${process?.env.BACK_END_URL}/api/image/posts/${req?.file?.filename}`
-            } else if (req?.query?.profilePhoto) {
-                data.profilePhoto = `${process?.env.BACK_END_URL}/api/image/posts/${req?.file?.filename}`
+            if (req?.file?.buffer) {
+                // Upload to Cloudinary and get a permanent URL
+                const { url } = await uploadToCloudinary(
+                    req.file.buffer,
+                    req.file.mimetype,
+                    "hivehub/profiles"
+                )
+
+                if (req?.query.coverPhoto) {
+                    data.coverPhoto = url
+                } else if (req?.query?.profilePhoto) {
+                    data.profilePhoto = url
+                }
             }
+
             if (data?.password) {
                 data.password = await passwordHashing(data.password)
             }
@@ -42,7 +52,6 @@ export const editUserProfile = (dependencies: IDependencies) => {
             if (!userData) {
                 throw new Error('Unable to update profile')
             }
-
 
             res.status(200).json({ status: 'ok', data: userData, message: 'Profile updated' })
 

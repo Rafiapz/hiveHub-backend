@@ -1,4 +1,3 @@
-import { getObjectSignedUrl } from "../../../_lib/s3"
 import { IDependencies } from "../../../application/interface/user/IDependencies"
 import { Request, Response } from 'express'
 

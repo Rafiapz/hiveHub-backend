@@ -3,6 +3,7 @@ import { IPostDependencies } from "../../../application/interface/posts/IDepende
 import { Request, Response } from 'express'
 import { PostEntity } from "../../../domain/entities";
 import { ObjectId } from "mongoose";
+import { uploadToCloudinary } from "../../../_lib/cloudinary";
 
 export const editPostController = (dependencies: IPostDependencies) => {
 
@@ -15,18 +16,25 @@ export const editPostController = (dependencies: IPostDependencies) => {
             const token: string | undefined = req.cookies.userToken
             if (token) {
                 const decoded = getTokenPayloads(token)
-                let path = `${process?.env.BACK_END_URL}/api/image/posts/${req?.file?.filename}`
-
 
                 if (decoded && typeof req?.query?.postId === 'string') {
                     let mediaType = req?.params?.type
                     const formData = req?.body
 
-                    let media
+                    let mediaPath: string | undefined
                     if (formData?.media) {
-                        media = JSON.parse(formData?.media)
-                        path = media.url
-                        mediaType = media.type
+                        // Client sent existing media metadata (no new upload)
+                        const existingMedia = JSON.parse(formData?.media)
+                        mediaPath = existingMedia.url
+                        mediaType = existingMedia.type
+                    } else if (req?.file?.buffer) {
+                        // New file uploaded — push to Cloudinary
+                        const { url } = await uploadToCloudinary(
+                            req.file.buffer,
+                            req.file.mimetype,
+                            "hivehub/posts"
+                        )
+                        mediaPath = url
                     }
 
                     const postIdString: string = req?.query?.postId
@@ -34,10 +42,9 @@ export const editPostController = (dependencies: IPostDependencies) => {
                     const data: PostEntity = {
                         _id: postId,
                         userId: decoded.id,
-                        media: { path: path, type: mediaType },
+                        media: mediaPath ? { path: mediaPath, type: mediaType } : undefined,
                         content: formData?.content
                     }
-
 
                     const updatedPost = await updatePostUseCase(dependencies).execute(data)
 

@@ -1,6 +1,7 @@
 import { IChatsDependencies } from "../../../application/interface/chats/IDependencies";
 import { Request, Response } from 'express'
 import { ChatsEntity } from "../../../domain/entities/chatsEntity";
+import { uploadToCloudinary } from "../../../_lib/cloudinary";
 
 export const createChatController = (dependencies: IChatsDependencies) => {
 
@@ -18,14 +19,22 @@ export const createChatController = (dependencies: IChatsDependencies) => {
                 conversationId: req?.body?.conversationId,
             }
 
-            if (req?.file?.filename && params === 'image') {
-                const path = `${process?.env.BACK_END_URL}/api/image/posts/${req?.file?.filename}`
-                data.image = path
-
+            if (req?.file?.buffer && params === 'image') {
+                const { url } = await uploadToCloudinary(
+                    req.file.buffer,
+                    req.file.mimetype,
+                    "hivehub/chats"
+                )
+                data.image = url
             }
-            if (params === 'video') {
-                const path = `${process?.env.BACK_END_URL}/api/image/posts/${req?.body?.fileName}`
-                data.video = path
+
+            if (params === 'video' && req?.file?.buffer) {
+                const { url } = await uploadToCloudinary(
+                    req.file.buffer,
+                    req.file.mimetype,
+                    "hivehub/chats"
+                )
+                data.video = url
             }
 
             const result = await createChatUseCase(dependencies).execute(data)

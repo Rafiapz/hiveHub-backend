@@ -1,4 +1,3 @@
-import { getObjectSignedUrl } from "../../../_lib/s3";
 import { IStoryDependencies } from "../../../application/interface/story/IDependencies";
 import { Request, Response } from 'express'
 
@@ -14,6 +13,8 @@ export const findAllStoriesController = (dependencies: IStoryDependencies) => {
 
             const { allStories, myStories } = await findAllStoryUseCase(dependencies).execute(userId)
 
+            // Story media URLs are now Cloudinary secure URLs stored directly in the DB —
+            // no signed URL generation needed.
             res.status(200).json({ status: 'ok', data: { allStories, myStories } })
 
         } catch (error: any) {

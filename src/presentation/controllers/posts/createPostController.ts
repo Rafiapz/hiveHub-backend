@@ -5,6 +5,7 @@ import { getTokenPayloads, verifyToken } from "../../../_lib/jwt";
 import { User } from "../../../infrastructure/database/models";
 import Notifications from "../../../infrastructure/database/models/notifications";
 import { NotificationsEntity } from "../../../domain/entities/notificationsEntity";
+import { uploadToCloudinary } from "../../../_lib/cloudinary";
 
 export const createPostController = (dependencies: IPostDependencies) => {
 
@@ -14,18 +15,27 @@ export const createPostController = (dependencies: IPostDependencies) => {
 
         try {
 
-
             const token: string | undefined = req.cookies.userToken
             if (token) {
                 const decoded = verifyToken(token)
-                const path = `${process?.env.BACK_END_URL}/api/image/posts/${req?.file?.filename}`
 
                 if (decoded) {
                     const mediaType = req.params.type
 
+                    let mediaPath: string | undefined = undefined
+
+                    if (req?.file?.buffer && mediaType) {
+                        const { url } = await uploadToCloudinary(
+                            req.file.buffer,
+                            req.file.mimetype,
+                            "hivehub/posts"
+                        )
+                        mediaPath = url
+                    }
+
                     const data: PostEntity = {
                         userId: decoded.id,
-                        media: mediaType ? { type: mediaType, path: path } : undefined,
+                        media: mediaType && mediaPath ? { type: mediaType, path: mediaPath } : undefined,
                         content: req?.body?.content,
                         likes: 0,
                         comments: 0,
@@ -65,7 +75,6 @@ export const createPostController = (dependencies: IPostDependencies) => {
 
         } catch (error: any) {
             res.json({ status: 'failed', message: error.message }).status(500)
-            //send proper error message
         }
     }
 }

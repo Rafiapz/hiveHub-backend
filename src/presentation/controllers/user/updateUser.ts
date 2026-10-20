@@ -1,13 +1,10 @@
-import { comparePassword } from "../../../_lib/bcrypt";
-import { genereateToken } from "../../../_lib/jwt";
 import { generateOtp } from "../../../_lib/otp";
 import { IDependencies } from "../../../application/interface/user/IDependencies";
-import { Request, Response, NextFunction } from 'express'
-
+import { Request, Response } from 'express'
 
 export const updateOtpController = (dependencies: IDependencies) => {
 
-    const { useCases: { updateOneUserUseCase, createUserUseCase } } = dependencies
+    const { useCases: { updateOneUserUseCase } } = dependencies
 
     return async (req: Request, res: Response) => {
 
@@ -15,19 +12,17 @@ export const updateOtpController = (dependencies: IDependencies) => {
 
             const email: string | undefined = req.query.email as string | undefined
 
-
-            if (email === undefined) {
-                throw new Error('Something went wrong')
-            } else {
-
-                const otpDetails = generateOtp(email)
-
-                updateOneUserUseCase(dependencies).execute({ email: email }, { otp: otpDetails })
+            if (!email) {
+                throw new Error('Email is required to resend OTP')
             }
 
-            res.json({ status: 'ok', message: 'Successfully resent OTP' }).status(200)
+            const otpDetails = generateOtp(email)
+
+            await updateOneUserUseCase(dependencies).execute({ email: email }, { otp: otpDetails })
+
+            res.status(200).json({ status: 'ok', message: 'Successfully resent OTP' })
         } catch (error: any) {
-            res.json({ status: 'failed', message: error.message })
+            res.status(400).json({ status: 'failed', message: error.message })
         }
     }
 }

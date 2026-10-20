@@ -1,7 +1,7 @@
 import { IStoryDependencies } from "../../../application/interface/story/IDependencies";
 import { Request, Response } from 'express'
 import { StoryEntity } from "../../../domain/entities/storyEntity";
-import { uploadToS3Bucket } from "../../../_lib/s3";
+import { uploadToCloudinary } from "../../../_lib/cloudinary";
 
 
 export const createStoryController = (dependencies: IStoryDependencies) => {
@@ -12,12 +12,19 @@ export const createStoryController = (dependencies: IStoryDependencies) => {
 
         try {
 
+            if (!req?.file?.buffer) {
+                throw new Error('No media file provided')
+            }
 
-            const path = `${process?.env.BACK_END_URL}/api/image/posts/${req?.file?.filename}`
+            const { url } = await uploadToCloudinary(
+                req.file.buffer,
+                req.file.mimetype,
+                "hivehub/stories"
+            )
 
             const data: StoryEntity = {
                 userId: req?.body?.userId,
-                media: [path],
+                media: [url],
                 description: req?.body?.description
             }
 
