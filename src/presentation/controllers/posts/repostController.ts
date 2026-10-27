@@ -22,11 +22,10 @@ export const repostController = (dependencies: IPostDependencies) => {
                 userId: req?.body?.userId,
                 content: originalPost?.content,
                 media: originalPost?.media,
-                likes: 0,
-                comments: 0,
-                shares: 0
+                likes: originalPost?.likes || 0,
+                comments: originalPost?.comments || 0,
+                shares: originalPost?.shares || 1
             }
-
 
             const newPost = await createPostUseCase(dependencies).execute(data)
 
@@ -34,7 +33,12 @@ export const repostController = (dependencies: IPostDependencies) => {
                 throw new Error('Unable to repost the post')
             }
 
-            res.status(200).json({ status: 'ok', data: newPost })
+            res.status(200).json({
+                status: 'ok',
+                data: newPost,
+                originalPost: originalPost,
+                updatedShares: originalPost?.shares || 1
+            })
 
         } catch (error: any) {
             res.status(error?.status || 500).json({ status: 'failed', message: error?.message })

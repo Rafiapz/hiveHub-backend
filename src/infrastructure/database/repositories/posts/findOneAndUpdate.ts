@@ -4,9 +4,13 @@ export const findOneAndUpdate = async (postId: any) => {
 
     try {
 
-        const post = await Posts.findOneAndUpdate({ _id: postId }, { $inc: { shares: 1 } })
+        const post = await Posts.findOneAndUpdate(
+            { _id: postId },
+            { $inc: { shares: 1 } },
+            { new: true }
+        ).populate('userId');
 
-        return post
+        return post;
 
     } catch (error: any) {
         throw new Error(error)

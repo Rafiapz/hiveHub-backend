@@ -64,7 +64,7 @@ export const initializeSocketIO = (server: Server) => {
       socket.on("addUser", (userId: any) => {
         if (userId) {
           addUser(userId, socket.id);
-          io.emit("getUsers", users);
+          io.emit("getUsers", Array.from(users.keys()));
         }
       });
 
@@ -192,36 +192,58 @@ export const initializeSocketIO = (server: Server) => {
         }
         if (disconnectedUserId) {
           removeUser(disconnectedUserId);
+          peers.delete(disconnectedUserId);
         }
         io.emit("getUsers", Array.from(users.keys()));
       });
 
       socket.on("peer-connection", ({ id, userId }) => {
-        if (userId) {
+        if (userId && id) {
           peers.set(userId, id);
         }
       });
 
-      socket.on("reject-call", (peerId) => {
-        const userId = getKeyByValue(peers, peerId);
+      socket.on("reject-call", (data: any) => {
+        const peerId = typeof data === "object" ? data?.peerId : data;
+        const callerId = typeof data === "object" ? data?.callerId : null;
+        const targetUserId = callerId || (peerId ? getKeyByValue(peers, peerId) : null);
 
-        if (userId) {
-          const user = getUser(userId);
-          io.to(user).emit("call-rejected", userId);
+        if (targetUserId) {
+          const user = getUser(targetUserId);
+          if (user) {
+            io.to(user).emit("call-rejected", targetUserId);
+          }
         }
       });
 
-      socket.on("end-call", (peerId) => {
-        const userId = getKeyByValue(peers, peerId);
+      socket.on("end-call", (data: any) => {
+        const peerId = typeof data === "object" ? data?.peerId : data;
+        const targetUserId = typeof data === "object" ? data?.targetUserId : null;
+        const userId = targetUserId || (peerId ? getKeyByValue(peers, peerId) : null);
 
         if (userId) {
           const user = getUser(userId);
+          if (user) {
+            io.to(user).emit("call-ended", userId);
+          }
+        }
+      });
 
-          io.to(user).emit("call-ended", userId);
+      socket.on("cancel-call", (data: any) => {
+        const peerId = typeof data === "object" ? data?.peerId : data;
+        const targetUserId = typeof data === "object" ? data?.targetUserId : null;
+        const userId = targetUserId || (peerId ? getKeyByValue(peers, peerId) : null);
+
+        if (userId) {
+          const user = getUser(userId);
+          if (user) {
+            io.to(user).emit("call-cancelled", userId);
+          }
         }
       });
     });
   } catch (error: any) {
+    console.error("Socket error:", error);
   }
 };
 
@@ -229,8 +251,8 @@ export const fetchPeerId = (req: Request, res: Response) => {
   try {
     const peerId = peers.get(req?.params?.id);
 
-    res.status(200).json({ status: "ok", data: { peerId } });
+    res.status(200).json({ status: "ok", data: { peerId: peerId || null } });
   } catch (error) {
-    res.status(400);
+    res.status(400).json({ status: "error", message: "Failed to fetch peerId" });
   }
 };

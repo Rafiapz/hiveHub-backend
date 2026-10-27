@@ -14,10 +14,11 @@ export const fetchAllposts = (dependencies: IPostDependencies) => {
 
             const user = req?.user
             const userId = (user as any)?.id;
-            const pageSize = 2
-            const pageNumber: any = req?.query?.page
+            const pageNumber = Math.max(1, parseInt(req?.query?.page as string, 10) || 1);
+            const rawSize = parseInt(req?.query?.size as string, 10);
+            const pageSize = !isNaN(rawSize) && rawSize > 0 ? rawSize : 10;
 
-            const skip = (pageNumber - 1) * pageSize
+            const skip = (pageNumber - 1) * pageSize;
             const limit = pageSize;
 
             const data = {
